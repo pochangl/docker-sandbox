@@ -36,16 +36,22 @@ def TempFile(text):
             yield f
 
 
+@contextlib.contextmanager
+def TransformError():
+    try:
+        yield
+    except errors.ContainerError as err:
+        raise ExecutionError(err)
+
+
+
 def run(image: str, tag: str, text: str) -> str:
     ''' run python in docker '''
-    with Client() as client, TempFile(text) as file:
-        try:
-            return client.containers.run(
-                image='{}:{}'.format(image, tag),
-                command='python /main.py',
-                volumes={
-                    file.name: dict(bind='/main.py', mode='ro')
-                }
-            )
-        except errors.ContainerError as err:
-            raise ExecutionError(err)
+    with Client() as client, TempFile(text) as file, TransformError():
+        return client.containers.run(
+            image='{}:{}'.format(image, tag),
+            command='python /main.py',
+            volumes={
+                file.name: dict(bind='/main.py', mode='ro')
+            }
+        )
