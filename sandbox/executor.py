@@ -9,12 +9,12 @@ def TempFile(text):
         generate a temporary file with default content(text)
         return a read only file handler
     '''
-    with tempfile.NamedTemporaryFile('w+', suffix='.py') as file:
-        file.write(text)
-        file.flush()
+    with tempfile.NamedTemporaryFile('w+', suffix='.py') as temp_file:
+        temp_file.write(text)
+        temp_file.flush()
 
-        with open(file.name, 'r') as f:
-            yield f
+        with open(temp_file.name, 'r') as reader:
+            yield reader
 
 
 @docker.TransformError()
