@@ -22,3 +22,9 @@ def TransformError():
         yield
     except errors.ContainerError as err:
         raise ExecutionError(err)
+
+
+@TransformError()
+def run(**kwargs):
+    with Client() as client:
+        return client.containers.run(**kwargs)

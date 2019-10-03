@@ -17,11 +17,10 @@ def TempFile(text):
             yield reader
 
 
-@docker.TransformError()
 def run(image: str, tag: str, text: str) -> str:
     ''' run python in docker '''
-    with docker.Client() as client, TempFile(text) as temp_file:
-        return client.containers.run(
+    with TempFile(text) as temp_file:
+        return docker.run(
             image='{}:{}'.format(image, tag),
             command='python /main.py',
             volumes={
