@@ -11,16 +11,9 @@ class ExecutionError(ValueError):
         super().__init__(self.error)
 
 
-@contextlib.contextmanager
 def Client():
     ''' create a docker client and close it afterward'''
-    client = docker.from_env()
-    try:
-        yield client
-    except Exception as err:
-        client.close()
-        raise err
-    client.close()
+    return contextlib.closing(docker.from_env())
 
 
 @contextlib.contextmanager
