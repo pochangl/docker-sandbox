@@ -7,7 +7,11 @@ import contextlib
 def Client():
     ''' create a docker client and close it afterward'''
     client = docker.from_env()
-    yield client
+    try:
+        yield client
+    except Exception as err:
+        client.close()
+        raise err
     client.close()
 
 
