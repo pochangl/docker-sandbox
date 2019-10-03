@@ -1,5 +1,6 @@
 from unittest import TestCase
-from ..executor import run, ExecutionError
+from ..executor import run
+from ..docker import ExecutionError
 
 
 class TestPythonRun(TestCase):
