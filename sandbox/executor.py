@@ -36,7 +36,7 @@ def TempFile(text):
             yield f
 
 
-def run(image: str, tag: str, text: str) -> (str, str):
+def run(image: str, tag: str, text: str) -> str:
     ''' run python in docker '''
     with Client() as client, TempFile(text) as file:
         try:
