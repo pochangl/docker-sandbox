@@ -42,11 +42,11 @@ def TransformError():
 @TransformError()
 def run(image: str, tag: str, text: str) -> str:
     ''' run python in docker '''
-    with Client() as client, TempFile(text) as file:
+    with Client() as client, TempFile(text) as temp_file:
         return client.containers.run(
             image='{}:{}'.format(image, tag),
             command='python /main.py',
             volumes={
-                file.name: dict(bind='/main.py', mode='ro')
+                temp_file.name: dict(bind='/main.py', mode='ro')
             }
         )
