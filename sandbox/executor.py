@@ -39,9 +39,10 @@ def TransformError():
         raise ExecutionError(err)
 
 
+@TransformError()
 def run(image: str, tag: str, text: str) -> str:
     ''' run python in docker '''
-    with Client() as client, TempFile(text) as file, TransformError():
+    with Client() as client, TempFile(text) as file:
         return client.containers.run(
             image='{}:{}'.format(image, tag),
             command='python /main.py',
