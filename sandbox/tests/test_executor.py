@@ -1,5 +1,5 @@
 from unittest import TestCase
-from ..executor import run
+from ..executor import run, ExecutionError
 
 
 class TestPythonRun(TestCase):
@@ -7,6 +7,9 @@ class TestPythonRun(TestCase):
         return run('python', '3.7', text)
 
     def test_hello_world(self):
-        out, err = self.run_python('print("hello world")')
-        self.assertEqual(err, '')
+        out = self.run_python('print("hello world")')
         self.assertEqual(out, b'hello world\n')
+
+    def test_exception(self):
+        with self.assertRaisesRegex(ExecutionError, r'Exception: err\n$'):
+            self.run_python('raise Exception("err")')
