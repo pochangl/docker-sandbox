@@ -1,4 +1,6 @@
 from django.test import TestCase
+from rest_framework import status
+from utils.rest_framework import ViewsetTestMixin
 from .models import Problem, Submission
 from .serializers import SubmissionSerializer
 
@@ -81,3 +83,71 @@ class TestSubmissionSerializer(ProblemMixin, TestCase):
                 getattr(submission, key),
                 readonly_data[key]
             )
+
+
+class TestProblemViewset(ViewsetTestMixin, ProblemMixin, TestCase):
+    view_name = 'problem:problem'
+
+    def create_problem(self):
+        return super().create_problem('')
+
+    def test_list(self):
+        problem = self.create_problem()
+        content = self.api_list().json
+        self.assertEqual(len(content), 1, content)
+        self.assertEqual(content[0]['id'], problem.pk)
+
+    def test_retrieve(self):
+        problem = self.create_problem()
+        content = self.api_retrieve(pk=problem.pk).json
+        self.assertEqual(content['id'], problem.pk)
+
+    def test_invalid_methods(self):
+        HTTP_405_METHOD_NOT_ALLOWED = status.HTTP_405_METHOD_NOT_ALLOWED
+        response = self.api_update(pk=1, data={})
+
+        self.assertEqual(response.status_code, HTTP_405_METHOD_NOT_ALLOWED)
+        response = self.api_delete(pk=1)
+        self.assertEqual(response.status_code, HTTP_405_METHOD_NOT_ALLOWED)
+
+        response = self.api_create(data={})
+        self.assertEqual(response.status_code, HTTP_405_METHOD_NOT_ALLOWED)
+
+
+class TestSubmissionViewset(ViewsetTestMixin, ProblemMixin, TestCase):
+    view_name = 'problem:submission'
+
+    def test_create(self):
+        problem = self.create_problem('test()')
+        data = dict(
+            problem=problem.pk,
+            code='def test(): pass',
+        )
+        content = self.api_create(data=data).json
+
+        self.assertDictContainsSubset(dict(
+            problem=problem.pk,
+            has_passed=True,
+            error='',
+            evaluated=True,
+        ), content)
+
+    def test_list(self):
+        content = self.api_list().json
+        self.assertEqual(content, [])
+
+    def test_retrieve(self):
+        problem = self.create_problem('test()')
+        submission = self.create_submission(
+            problem=problem,
+            code='def test(): pass')
+        content = self.api_retrieve(pk=submission.pk).json
+        self.assertEqual(content['id'], submission.pk)
+
+    def test_invalid_methods(self):
+        HTTP_405_METHOD_NOT_ALLOWED = status.HTTP_405_METHOD_NOT_ALLOWED
+        response = self.api_update(pk=1, data={})
+
+        self.assertEqual(response.status_code, HTTP_405_METHOD_NOT_ALLOWED)
+        response = self.api_delete(pk=1)
+        self.assertEqual(response.status_code, HTTP_405_METHOD_NOT_ALLOWED)
