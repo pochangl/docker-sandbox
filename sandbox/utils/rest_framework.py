@@ -42,15 +42,24 @@ class ViewsetTestMixin(APIMixin):
 
     @enrich_content
     @default_client
-    def api_retrieve(self, client, pk):
+    def api_retrieve(self, client: APIClient, pk: int):
         return client.get(self.get_detail_url(pk), format=self.request_format)
 
     @enrich_content
     @default_client
-    def api_list(self, client):
+    def api_list(self, client: APIClient):
         return client.get(self.get_list_url(), format=self.request_format)
 
     @enrich_content
     @default_client
-    def api_create(self, client, data):
+    def api_create(self, client: APIClient, data: dict):
         return client.post(self.get_list_url(), data, format=self.request_format)
+
+    @enrich_content
+    @default_client
+    def api_update(self, client: APIClient, pk: int, data: dict):
+        return client.put(self.get_detail_url(pk), data, format=self.request_format)
+
+    @default_client
+    def api_delete(self, client: APIClient, pk: int):
+        return client.put(self.get_detail_url(pk), format=self.request_format)
