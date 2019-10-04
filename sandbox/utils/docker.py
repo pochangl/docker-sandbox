@@ -15,6 +15,11 @@ def Client():
     return contextlib.closing(docker.from_env())
 
 
+def Volumes(*pair):
+    items = ((path, dict(bind=target, mode='ro')) for path, target in pair)
+    return dict(items)
+
+
 @contextlib.contextmanager
 def TransformError():
     ''' convert error to known error class '''

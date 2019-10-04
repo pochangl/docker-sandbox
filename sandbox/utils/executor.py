@@ -23,7 +23,7 @@ def run(image: str, tag: str, text: str) -> str:
         return docker.run(
             image='{}:{}'.format(image, tag),
             command='python /main.py',
-            volumes={
-                temp_file.name: dict(bind='/main.py', mode='ro')
-            }
+            volumes=docker.Volumes(
+                [temp_file.name, '/main.py']
+            )
         )
