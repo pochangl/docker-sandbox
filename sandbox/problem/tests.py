@@ -104,9 +104,10 @@ class TestProblemViewset(ViewsetTestMixin, ProblemMixin, TestCase):
 
     def test_invalid_methods(self):
         HTTP_405_METHOD_NOT_ALLOWED = status.HTTP_405_METHOD_NOT_ALLOWED
-        response = self.api_update(pk=1, data={})
 
+        response = self.api_update(pk=1, data={})
         self.assertEqual(response.status_code, HTTP_405_METHOD_NOT_ALLOWED)
+
         response = self.api_delete(pk=1)
         self.assertEqual(response.status_code, HTTP_405_METHOD_NOT_ALLOWED)
 
@@ -146,8 +147,9 @@ class TestSubmissionViewset(ViewsetTestMixin, ProblemMixin, TestCase):
 
     def test_invalid_methods(self):
         HTTP_405_METHOD_NOT_ALLOWED = status.HTTP_405_METHOD_NOT_ALLOWED
-        response = self.api_update(pk=1, data={})
 
+        response = self.api_update(pk=1, data={})
         self.assertEqual(response.status_code, HTTP_405_METHOD_NOT_ALLOWED)
+
         response = self.api_delete(pk=1)
         self.assertEqual(response.status_code, HTTP_405_METHOD_NOT_ALLOWED)
