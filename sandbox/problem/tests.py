@@ -56,7 +56,7 @@ class TestSubmissionSerializer(ProblemMixin, TestCase):
         submission = serializer.save()
         self.assertTrue(submission.evaluated)
 
-    def test_read_only_field(self):
+    def test_fields(self):
         problem = self.create_problem(run_script='test()')
         readonly_data = dict(
             evaluate=False,
