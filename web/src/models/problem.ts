@@ -1,9 +1,11 @@
 import { Model, ModelList } from '@/models'
 
 export class Problem extends Model {
-  viewName = 'problem/problem'
-
+  static viewName = 'problem/problem'
   static fields = ['title', 'description']
+
+  title: string
+  description: string
 }
 
 export class ProblemList extends ModelList<Problem> {
