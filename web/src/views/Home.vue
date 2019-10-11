@@ -17,7 +17,7 @@ import { ProblemList } from '@/models/problem'
 
 @Component
 export default class Home extends Vue {
-  problems?: ProblemList = null
+  problems: ProblemList | null = null
 
   created () {
     this.fetch().then().catch()

@@ -31,7 +31,7 @@ export default class ProblemPage extends Vue {
   get problem () {
     return this.$route.params.problem
   }
-  submission?: Submission = undefined
+  submission: Submission | null = null
 
   @ProblemTransformer('problem')
   problemModel: Problem = new Problem()
