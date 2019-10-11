@@ -9,9 +9,9 @@ beforeEach(() => {
   server.reset()
 })
 
-const url: any = '//api/url/'
+const url: any = 'http://localhost/api/url/'
 const body = 'bod'
-const baseBusName = '//api/url/'
+const baseBusName = 'http://localhost/api/url/'
 
 class DataModel extends Model {
   id = 1
@@ -101,6 +101,7 @@ describe('Server', () => {
     const promise = server.wait(DataModel, 'get', 1)
     const model = new DataModel()
     const getPromise = model.fetch()
+
     const request = await promise
     request.respond({
       id: 9
@@ -109,6 +110,7 @@ describe('Server', () => {
     expect(model.id).toBe(9)
     expect(server.events).toEqual({})
   })
+
   test('reject request', async () => {
     const promise = server.wait(DataModel, 'get', 1)
     const model = new DataModel()

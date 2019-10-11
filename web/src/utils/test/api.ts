@@ -1,11 +1,11 @@
 import { Bus } from './bus'
 
 export function getListUrl(name: string): string {
-  return '//api/' + name + '/'
+  return 'http://localhost/api/' + name + '/'
 }
 
 export function getDetailUrl(name: string, id: number): string {
-  return '//api/' + name + '/' + id + '/'
+  return 'http://localhost/api/' + name + '/' + id + '/'
 }
 
 interface IServerRequest {

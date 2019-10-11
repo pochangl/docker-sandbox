@@ -4,11 +4,11 @@
 import http from '@/http'
 
 export function getListUrl(name: string): string {
-  return '//api/' + name + '/'
+  return `${window.location.origin}/api/${name}/`
 }
 
 export function getDetailUrl(name: string, id: number): string {
-  return '//api/' + name + '/' + id + '/'
+  return `${window.location.origin}/api/${name}/${id}/`
 }
 
 interface IModelConstructor<T extends Model> {
