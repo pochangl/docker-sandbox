@@ -1,11 +1,16 @@
 <template lang="pug">
-  div(class="home")
-    p This is a Home page
+  v-container(style="height: 90vh")
+    code-editor
 </template>
 
 <script lang="ts">
 import { Component, Vue } from 'vue-property-decorator'
+import CodeEditor from '@/components/CodeEditor.vue'
 
-@Component
+@Component({
+  components: {
+    CodeEditor
+  }
+})
 export default class Home extends Vue {}
 </script>
