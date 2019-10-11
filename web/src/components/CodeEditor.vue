@@ -3,7 +3,7 @@
     div.editor-dom(ref="container")
     v-layout.mt-5
       v-spacer
-      v-btn(@click="submit" large) Submit
+      v-btn(@click="submit" large dark) Submit
 </template>
 <script lang="ts">
 import ace from 'ace-builds'
