@@ -74,7 +74,7 @@ export abstract class ModelList<T extends Model> {
 
   async fetch() {
     // fetching data from server
-    const Model: IModelConstructor<T> = (this.constructor as any).Model.viewName
+    const Model: IModelConstructor<T> = (this.constructor as any).Model
     const url: string = getListUrl(Model.viewName)
     const response = await http.get(url)
     this.objects = (await response.json()).map((content: any) => {
