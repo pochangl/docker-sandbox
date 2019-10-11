@@ -1,16 +1,32 @@
 <template lang="pug">
-  v-container(style="height: 90vh")
-    code-editor
+  v-container(fluid)
+    v-list(v-if="problems")
+      v-subheader 所有題目
+      v-list-item(
+        router
+        :to="{name: 'problem', params: {problem: 1}}"
+        v-for="problem in problems.objects"
+        :key="problem.id"
+      )
+        v-list-item-title {{ problem.title }}
 </template>
 
 <script lang="ts">
 import { Component, Vue } from 'vue-property-decorator'
-import CodeEditor from '@/components/CodeEditor.vue'
+import { ProblemList } from '@/models/problem'
 
-@Component({
-  components: {
-    CodeEditor
+@Component
+export default class Home extends Vue {
+  problems?: ProblemList = null
+
+  created () {
+    this.fetch().then().catch()
   }
-})
-export default class Home extends Vue {}
+
+  async fetch () {
+    const problems = new ProblemList()
+    await problems.fetch()
+    this.problems = problems
+  }
+}
 </script>
