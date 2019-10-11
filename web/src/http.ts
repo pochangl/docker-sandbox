@@ -11,7 +11,7 @@ function getCookie (cookieKey: string) {
   const cookieArray = document.cookie.split(';').map(w => w.trim())
 
   for (const cookie of cookieArray) {
-    if (cookie.indexOf(cookieName) == 0) {
+    if (cookie.indexOf(cookieName) === 0) {
       return cookie.substring(cookieName.length, cookie.length);
     }
   }
