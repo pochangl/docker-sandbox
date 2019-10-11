@@ -75,7 +75,7 @@ describe('Server', () => {
     server.request('get', {
       url,
       body: body as any
-    })
+    }).then().catch()
     expect(server.events).toHaveProperty(busName)
     expect(server.events).toHaveProperty('reject_' + busName)
     expect(received).toBe(true)
@@ -86,7 +86,7 @@ describe('Server', () => {
     server.request('get', {
       url,
       body: body as any
-    })
+    }).then().catch()
 
     const request = await promise
     expect(request).toMatchObject({
@@ -130,7 +130,7 @@ describe('Server', () => {
   it('hasRequest', () => {
     const model = new DataModel()
     expect(server.hasRequest(DataModel, 'post', 0)).toBe(false)
-    model.create()
+    model.create().then().catch()
     expect(server.hasRequest(DataModel, 'post', 0)).toBe(true)
   })
 })
@@ -140,7 +140,7 @@ describe('Client Request', () => {
     const promise = server.wait(DataModel, 'get', 1)
     const model = new DataModel()
     model.data = 'd'
-    model.fetch()
+    model.fetch().then().catch()
     const request = await promise
     expect(request).toMatchObject({
       url: `${url}1/`
@@ -167,7 +167,7 @@ describe('Client Request', () => {
     const promise = server.wait(DataModel, 'post')
     const model = new DataModel()
     model.data = 'd'
-    model.create()
+    model.create().then().catch()
     const request = await promise
     expect(request).toMatchObject({
       url,
@@ -222,7 +222,7 @@ describe('Client Request', () => {
 
     await client
       .run(() => {
-        model.fetch()
+        model.fetch().then().catch()
       })
       .wait(DataModel, 'get', 1)
       .before(() => {
@@ -279,7 +279,7 @@ describe('Client Request', () => {
     const model = new DataModel()
     await client
       .run(() => {
-        model.fetch()
+        model.fetch().then().catch()
       })
       .wait(DataModel, 'get', 1)
       .respond((request: any) => {
@@ -297,7 +297,7 @@ describe('Client Request', () => {
 
     await client.run(async () => {
         await model.fetch()
-        for (const _ in [1, 2, 3, 4, 5]) {
+        for (const _ of [1, 2, 3, 4, 5]) {
           await $nextTick()
         }
         reached = true

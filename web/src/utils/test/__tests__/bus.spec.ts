@@ -9,7 +9,7 @@ describe('Bus', () => {
 
     bus.on('ev', func)
 
-    expect(bus.events['ev']).toEqual([func])
+    expect(bus.events.ev).toEqual([func])
   })
 
   it('should unsubscribe', () => {
@@ -59,7 +59,7 @@ describe('Bus', () => {
   })
 
   it('should dispatch data', () => {
-    let data = undefined
+    let data
     function func1(d: any) {
       data = d
     }

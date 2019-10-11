@@ -27,6 +27,9 @@
     "no-unexpected-multiline": true,
     "max-classes-per-file": false,
     "member-ordering": false,
-    "member-access": false
+    "member-access": false,
+    "no-shadowed-variable": false,
+    "no-empty": false,
+    "await-promise": [true, "PromiseLike"]
   }
 }
