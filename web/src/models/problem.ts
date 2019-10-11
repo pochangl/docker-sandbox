@@ -18,4 +18,5 @@ export class Submission extends Model {
 
   problem: number = 0
   code: string = ''
+  error: string = ''
 }

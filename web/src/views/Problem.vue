@@ -1,10 +1,11 @@
 <template lang="pug">
   v-container(style="height: 90vh" fluid)
     v-layout(row wrap fill-height)
-      v-flex(xs2)
+      v-flex.flex-grow-0.pa-4
         p {{ problemModel.title }}
         p {{ problemModel.description }}
-      v-flex(xs10)
+        pre.red--text(v-if="error") {{ error }}
+      v-flex
         code-editor(@submit="submit")
 </template>
 
@@ -30,6 +31,7 @@ export default class ProblemPage extends Vue {
   get problem () {
     return this.$route.params.problem
   }
+  submission?: Submission = undefined
 
   @ProblemTransformer('problem')
   problemModel: Problem = new Problem()
@@ -39,6 +41,13 @@ export default class ProblemPage extends Vue {
     submission.code = code
     submission.problem = this.problemModel.id
     await submission.create()
+    this.submission = submission
+  }
+  get error () {
+    if (this.submission) {
+      return this.submission.error
+    }
+    return null
   }
 }
 </script>
