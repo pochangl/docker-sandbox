@@ -1,4 +1,5 @@
 import { Bus } from './bus'
+import { $nextTick } from '@/utils/test/promise'
 
 export function getListUrl(name: string): string {
   return 'http://localhost/api/' + name + '/'
@@ -198,6 +199,7 @@ class Request {
     } else {
       request.respond(data)
     }
+    await $nextTick()
     return runPromise
   }
 }

@@ -56,7 +56,7 @@ export abstract class Model {
     const viewName: string = (this.constructor as any).viewName
     const url = getDetailUrl((this.constructor as IModelConstructor<Model>).viewName, this.id)
     const response = await http.get(url)
-    this.construct(response.json())
+    this.construct(await response.json())
   }
 
   async create() {
@@ -64,7 +64,7 @@ export abstract class Model {
     const viewName: string = (this.constructor as any).viewName
     const url = getListUrl((this.constructor as IModelConstructor<Model>).viewName)
     const response = await http.post(url, this.json())
-    this.construct(response.json())
+    this.construct(await response.json())
   }
 }
 
@@ -77,7 +77,7 @@ export abstract class ModelList<T extends Model> {
     const Model: IModelConstructor<T> = (this.constructor as any).Model.viewName
     const url: string = getListUrl(Model.viewName)
     const response = await http.get(url)
-    this.objects = response.json().map((content: any) => {
+    this.objects = (await response.json()).map((content: any) => {
       const model = new Model()
       model.construct(content)
       return model
