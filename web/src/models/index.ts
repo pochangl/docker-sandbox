@@ -1,18 +1,13 @@
 /*
   Data Model that blends well with django_rest_framework
 */
-import Vue from 'vue'
-import { Http } from 'vue-resource/types/vue_resource'
-import VueResource from 'vue-resource'
+import http from '@/http'
 
-Vue.use(VueResource)
-const http: Http = (Vue as any).http
-
-function getListUrl(name: string): string {
+export function getListUrl(name: string): string {
   return '//api/' + name + '/'
 }
 
-function getDetailUrl(name: string, id: number): string {
+export function getDetailUrl(name: string, id: number): string {
   return '//api/' + name + '/' + id + '/'
 }
 
@@ -20,6 +15,8 @@ interface IModelConstructor<T extends Model> {
   new(): T
   fields: string[]
   viewName: string
+  getListUrl (): string
+  getDetailUrl(id: number): string
 }
 
 interface IRawModel {
@@ -30,7 +27,7 @@ interface IRawModel {
 export abstract class Model {
   // class that handles single data from API
   id: number = 0
-  static fields = []
+  static fields: string[] = []
   static viewName = ''
 
   construct(obj: IRawModel) {
@@ -45,7 +42,7 @@ export abstract class Model {
   json(): IRawModel {
     // convert model to json that can be passed to api
     const fields = (this.constructor as any).fields
-    let data: IRawModel = {
+    const data: IRawModel = {
       id: this.id
     }
     for (const name of fields) {
@@ -57,7 +54,7 @@ export abstract class Model {
   async fetch() {
     // fetching data from server
     const viewName: string = (this.constructor as any).viewName
-    const url = getDetailUrl(viewName, this.id)
+    const url = getDetailUrl((this.constructor as IModelConstructor<Model>).viewName, this.id)
     const response = await http.get(url)
     this.construct(response.json())
   }
@@ -65,7 +62,7 @@ export abstract class Model {
   async create() {
     // post data to server
     const viewName: string = (this.constructor as any).viewName
-    const url = getListUrl(viewName)
+    const url = getListUrl((this.constructor as IModelConstructor<Model>).viewName)
     const response = await http.post(url, this.json())
     this.construct(response.json())
   }
