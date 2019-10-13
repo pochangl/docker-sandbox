@@ -16,6 +16,8 @@ class Problem(models.Model):
         merged_code = '{}\n{}'.format(code, self.run_script)
         return executor.run('python', '3.7', merged_code)
 
+    def __str__(self):
+        return self.title
 
 class Submission(models.Model):
     problem = models.ForeignKey(Problem, on_delete=models.PROTECT)
