@@ -9,4 +9,5 @@ class ProblemAdmin(admin.ModelAdmin):
 
 @admin.register(models.Submission)
 class SubmissionAdmin(admin.ModelAdmin):
-    list_display = ('has_passed', 'time_created')
+    list_display = ('pk', 'problem', 'has_passed', 'time_created')
+    readonly_fields = ('problem', 'code', 'evaluated', 'stderr', 'stdout')
