@@ -21,12 +21,12 @@ class Submission(models.Model):
     problem = models.ForeignKey(Problem, on_delete=models.PROTECT)
     code = models.TextField()
     evaluated = models.BooleanField(default=False)
-    error = models.TextField(default='')
+    stderr = models.TextField(default='')
     time_created = models.DateTimeField(auto_now_add=True)
 
     @property
     def has_passed(self):
-        return self.error == ''
+        return self.stderr == ''
 
     def evaluate(self):
         '''
@@ -35,6 +35,6 @@ class Submission(models.Model):
         try:
             return self.problem.run(self.code)
         except docker.ExecutionError as error:
-            self.error = str(error)
+            self.stderr = str(error)
         finally:
             self.evaluated = True

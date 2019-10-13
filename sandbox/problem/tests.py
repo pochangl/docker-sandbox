@@ -61,7 +61,7 @@ class TestSubmissionSerializer(ProblemMixin, TestCase):
         readonly_data = dict(
             evaluate=False,
             has_passed=0,
-            error='err'
+            stderr='err'
         )
         data = dict(
             problem=problem.pk,
@@ -129,7 +129,7 @@ class TestSubmissionViewset(ViewsetTestMixin, ProblemMixin, TestCase):
         self.assertDictContainsSubset(dict(
             problem=problem.pk,
             has_passed=True,
-            error='',
+            stderr='',
             evaluated=True,
         ), content)
 
