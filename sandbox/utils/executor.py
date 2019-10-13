@@ -1,5 +1,6 @@
 import tempfile
 import contextlib
+from functools import wraps
 from . import docker
 
 
@@ -17,6 +18,16 @@ def TempFile(text=''):
             yield reader
 
 
+def return_str(func):
+    'convert binary to utf8 string'
+    @wraps(func)
+    def wrapper(*args, **kwargs):
+        result = func(*args, **kwargs)
+        return str(result, encoding='utf8')
+    return wrapper
+
+
+@return_str
 def run(image: str, tag: str, text: str) -> str:
     ''' run python in docker '''
     with TempFile(text) as main:

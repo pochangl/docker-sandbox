@@ -9,7 +9,7 @@ class TestPythonRun(TestCase):
 
     def test_hello_world(self):
         stdout = self.run_python('print("hello world")')
-        self.assertEqual(stdout, b'hello world\n')
+        self.assertEqual(stdout, 'hello world\n')
 
     def test_exception(self):
         with self.assertRaisesRegex(ExecutionError, r'Exception: err\n$'):
