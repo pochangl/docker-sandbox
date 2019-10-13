@@ -9,6 +9,10 @@ class ProblemSerializer(serializers.ModelSerializer):
 
 
 class SubmissionSerializer(serializers.ModelSerializer):
+
+    # trimming is unexpected and biased
+    code = serializers.CharField(trim_whitespace=False, max_length=10240)
+
     class Meta:
         model = models.Submission
         fields = ('id', 'problem', 'code', 'stdout', 'stderr', 'evaluated', 'has_passed')

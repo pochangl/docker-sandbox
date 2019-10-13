@@ -94,6 +94,20 @@ class TestSubmissionSerializer(ProblemMixin, TestCase):
                 readonly_data[key]
             )
 
+    def test_trim_space(self):
+        'make sure code does not get trimmed'
+        problem = self.create_problem(run_script='test()')
+        code = '\n\n def test(): pass \n\n'
+        data = dict(
+            problem=problem.pk,
+            code=code,
+        )
+        serializer = SubmissionSerializer(data=data)
+        serializer.is_valid()
+        submission = serializer.save()
+
+        self.assertEqual(submission.code, code)
+
 
 class TestProblemViewset(ViewsetTestMixin, ProblemMixin, TestCase):
     view_name = 'problem:problem'
