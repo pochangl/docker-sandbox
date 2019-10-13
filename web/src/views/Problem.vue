@@ -4,7 +4,9 @@
       v-flex.flex-grow-0.pa-4
         p {{ problemModel.title }}
         p {{ problemModel.description }}
-        pre.red--text(v-if="stderr") {{ stderr }}
+        template(v-if="submission")
+          pre.green--text {{ submission.stdout }}
+          pre.red--text(v-if="submission.stderr") {{ submission.stderr }}
       v-flex
         code-editor(@submit="submit")
 </template>
@@ -42,12 +44,6 @@ export default class ProblemPage extends Vue {
     submission.problem = this.problemModel.id
     await submission.create()
     this.submission = submission
-  }
-  get stderr () {
-    if (this.submission) {
-      return this.submission.stderr
-    }
-    return null
   }
 }
 </script>

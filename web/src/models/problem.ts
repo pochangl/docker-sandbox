@@ -14,9 +14,10 @@ export class ProblemList extends ModelList<Problem> {
 
 export class Submission extends Model {
   static viewName = 'problem/submission'
-  static fields = ['problem', 'code', 'evaluated', 'has_passed', 'stderr']
+  static fields = ['problem', 'code', 'evaluated', 'has_passed', 'stderr', 'stdout']
 
   problem: number = 0
   code: string = ''
   stderr: string = ''
+  stdout: string = ''
 }
