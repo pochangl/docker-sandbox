@@ -11,8 +11,8 @@ class ProblemSerializer(serializers.ModelSerializer):
 class SubmissionSerializer(serializers.ModelSerializer):
     class Meta:
         model = models.Submission
-        fields = ('id', 'problem', 'code', 'stderr', 'evaluated', 'has_passed')
-        read_only_fields = ('stderr', 'evaluated', 'has_passed')
+        fields = ('id', 'problem', 'code', 'stdout', 'stderr', 'evaluated', 'has_passed')
+        read_only_fields = ('stderr', 'stdout', 'evaluated', 'has_passed')
 
     def create(self, *args, **kwargs):
         submission = super().create(*args, **kwargs)

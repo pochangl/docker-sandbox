@@ -22,6 +22,7 @@ class Submission(models.Model):
     code = models.TextField()
     evaluated = models.BooleanField(default=False)
     stderr = models.TextField(default='')
+    stdout = models.TextField(default='')
     time_created = models.DateTimeField(auto_now_add=True)
 
     @property
@@ -33,7 +34,7 @@ class Submission(models.Model):
             evaluate result
         '''
         try:
-            return self.problem.run(self.code)
+            self.stdout = self.problem.run(self.code)
         except docker.ExecutionError as error:
             self.stderr = str(error)
         finally:

@@ -22,7 +22,7 @@ class TestModel(ProblemMixin, TestCase):
         problem = self.create_problem(run_script='test()')
         submission = self.create_submission(
             problem=problem,
-            code='def test(): pass')
+            code='def test(): print("stdout")')
 
         self.assertFalse(submission.evaluated)
 
@@ -30,12 +30,19 @@ class TestModel(ProblemMixin, TestCase):
 
         self.assertTrue(submission.evaluated)
         self.assertTrue(submission.has_passed)
+        self.assertEqual(submission.stdout, 'stdout\n')
+        self.assertEqual(submission.stderr, '')
 
     def test_evaluate_fail(self):
         problem = self.create_problem(run_script='test()')
+        code = (
+            'def test():'
+            '  print(1)'
+            '  raise Exception()'
+        )
         submission = self.create_submission(
             problem=problem,
-            code='def test(): raise Exception()')
+            code=code)
 
         self.assertFalse(submission.evaluated)
 
@@ -43,6 +50,8 @@ class TestModel(ProblemMixin, TestCase):
 
         self.assertFalse(submission.has_passed)
         self.assertTrue(submission.evaluated)
+        self.assertEqual(submission.stdout, '')
+        self.assertTrue('raise Exception()' in submission.stderr)
 
 
 class TestSubmissionSerializer(ProblemMixin, TestCase):
@@ -61,7 +70,8 @@ class TestSubmissionSerializer(ProblemMixin, TestCase):
         readonly_data = dict(
             evaluate=False,
             has_passed=0,
-            stderr='err'
+            stderr='err',
+            stdout='out'
         )
         data = dict(
             problem=problem.pk,
