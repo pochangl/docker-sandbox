@@ -19,11 +19,11 @@ def TempFile(text):
 
 def run(image: str, tag: str, text: str) -> str:
     ''' run python in docker '''
-    with TempFile(text) as temp_file:
+    with TempFile(text) as main:
         return docker.run(
             image='{}:{}'.format(image, tag),
             command='python /main.py',
             volumes=docker.Volumes(
-                [temp_file.name, '/main.py']
+                [main.name, '/main.py']
             )
         )
