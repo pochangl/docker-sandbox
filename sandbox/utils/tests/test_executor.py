@@ -8,8 +8,8 @@ class TestPythonRun(TestCase):
         return run('python', '3.7', text)
 
     def test_hello_world(self):
-        out = self.run_python('print("hello world")')
-        self.assertEqual(out, b'hello world\n')
+        stdout = self.run_python('print("hello world")')
+        self.assertEqual(stdout, b'hello world\n')
 
     def test_exception(self):
         with self.assertRaisesRegex(ExecutionError, r'Exception: err\n$'):
