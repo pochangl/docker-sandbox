@@ -4,7 +4,7 @@ from . import docker
 
 
 @contextlib.contextmanager
-def TempFile(text):
+def TempFile(text=''):
     '''
         generate a temporary file with default content(text)
         return a read only file handler
