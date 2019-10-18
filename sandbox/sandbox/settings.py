@@ -38,6 +38,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'problem',
+    'channels'
 ]
 
 MIDDLEWARE = [
@@ -69,6 +70,7 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = 'sandbox.wsgi.application'
+ASGI_APPLICATION = "sandbox.routing.application"
 
 
 # Database
