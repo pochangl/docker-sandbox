@@ -1,8 +1,8 @@
 from django.test import TestCase
 from rest_framework import status
 from utils.rest_framework import ViewsetTestMixin
-from .models import Problem, Submission
-from .serializers import SubmissionSerializer
+from ..models import Problem, Submission
+from ..serializers import SubmissionSerializer
 
 
 class ProblemMixin:
