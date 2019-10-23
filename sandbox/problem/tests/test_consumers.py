@@ -9,8 +9,10 @@ from .. import models
 async def test_submit():
     problem = create_problem(run_script='test()')
     data = dict(
-        problem=problem.pk,
-        code='def test(): print("stdout")',
+        value=dict(
+            problem=problem.pk,
+            code='def test(): print("stdout")',
+        )
     )
 
     communicator = WebsocketCommunicator(SubmissionConsumer, '/submission')

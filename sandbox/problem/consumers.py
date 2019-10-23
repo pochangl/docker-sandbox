@@ -7,7 +7,7 @@ class SubmissionConsumer(JsonWebsocketConsumer):
         self.accept()
 
     def receive_json(self, content):
-        serializer = serializers.SubmissionSerializer(data=content)
+        serializer = serializers.SubmissionSerializer(data=content['value'])
         if serializer.is_valid():
             submission = serializer.save()
             submission.evaluate()
