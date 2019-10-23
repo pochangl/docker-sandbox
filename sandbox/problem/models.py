@@ -19,6 +19,7 @@ class Problem(models.Model):
     def __str__(self):
         return self.title
 
+
 class Submission(models.Model):
     problem = models.ForeignKey(Problem, on_delete=models.PROTECT)
     code = models.TextField()
