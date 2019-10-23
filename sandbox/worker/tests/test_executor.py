@@ -18,13 +18,11 @@ def run_python(text: str):
     return run('python', '3.7', text)
 
 
-@pytest.mark.asyncio
-async def test_hello_world():
-    stdout = await run_python('print("hello world")')
+def test_hello_world():
+    stdout = run_python('print("hello world")')
     assert stdout == 'hello world\n'
 
 
-@pytest.mark.asyncio
-async def test_exception():
+def test_exception():
     with assertRaisesRegex(ExecutionError, r'Exception: err\n$'):
-        await run_python('raise Exception("err")')
+        run_python('raise Exception("err")')

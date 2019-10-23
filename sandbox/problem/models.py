@@ -1,5 +1,5 @@
 from django.db import models
-from worker import executor
+from worker import dispatcher
 
 
 class Problem(models.Model):
@@ -13,7 +13,7 @@ class Problem(models.Model):
             then execute the merged code
         '''
         merged_code = '{}\n{}'.format(code, self.run_script)
-        return await executor.run('python', '3.7', merged_code)
+        return await dispatcher.run('python', '3.7', merged_code)
 
     def __str__(self):
         return self.title
@@ -35,9 +35,7 @@ class Submission(models.Model):
         '''
             evaluate result
         '''
-        try:
-            self.stdout = await self.problem.run(self.code)
-        except executor.ExecutionError as error:
-            self.stderr = str(error)
-        finally:
-            self.evaluated = True
+        result = await self.problem.run(self.code)
+        self.stdout = result.stdout
+        self.stderr = result.stderr
+        self.evaluated = True
