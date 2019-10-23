@@ -2,12 +2,15 @@ from django.test import TestCase
 from rest_framework import status
 from utils.rest_framework import ViewsetTestMixin
 from ..serializers import SubmissionSerializer
-from .utils import create_problem, create_submission
+from .utils import create_problem as base_create_problem, create_submission as base_create_submission
 
 
 class ProblemMixin:
-    create_problem = create_problem
-    create_submission = create_submission
+    def create_problem(self, *args, **kwargs):
+        return base_create_problem(*args, **kwargs)
+
+    def create_submission(self, *args, **kwargs):
+        return base_create_submission(*args, **kwargs)
 
 
 class TestModel(ProblemMixin, TestCase):
