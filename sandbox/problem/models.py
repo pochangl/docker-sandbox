@@ -1,6 +1,6 @@
 from django.db import models
-from utils import docker
-from utils import executor
+from worker import docker
+from worker import executor
 
 
 class Problem(models.Model):
