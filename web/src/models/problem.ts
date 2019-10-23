@@ -1,4 +1,4 @@
-import { Model, ModelList } from '@/models'
+import { Model, ModelList, WebSocketModel } from '@/models'
 
 export class Problem extends Model {
   static viewName = 'problem/problem'
@@ -12,7 +12,7 @@ export class ProblemList extends ModelList<Problem> {
   static Model = Problem
 }
 
-export class Submission extends Model {
+export class Submission extends WebSocketModel {
   static viewName = 'problem/submission'
   static fields = ['problem', 'code', 'evaluated', 'has_passed', 'stderr', 'stdout']
 
@@ -20,4 +20,8 @@ export class Submission extends Model {
   code: string = ''
   stderr: string = ''
   stdout: string = ''
+
+  create () {
+    return this.send()
+  }
 }
