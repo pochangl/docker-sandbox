@@ -4,7 +4,7 @@ from problem import consumers
 
 application = ProtocolTypeRouter({
     'websocket': URLRouter([
-        url(r'problem/$', consumers.SubmissionConsumer),
+        url(r'^ws/problem/submission/$', consumers.SubmissionConsumer),
     ])
     # Empty for now (http->django views is added by default)
 })
