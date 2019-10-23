@@ -4,6 +4,22 @@ from functools import wraps
 from . import docker
 
 
+class ExecutionError(ValueError):
+    def __init__(self, error):
+        ''' convert error message to error class '''
+        self.error = str(error.stderr, encoding='utf8')
+        super().__init__(self.error)
+
+
+@contextlib.contextmanager
+def TransformError():
+    ''' convert error to known error class '''
+    try:
+        yield
+    except Exception as err:
+        raise ExecutionError(err)
+
+
 @contextlib.contextmanager
 def TempFile(text=''):
     '''
@@ -27,6 +43,7 @@ def return_str(func):
     return wrapper
 
 
+@TransformError()
 @return_str
 def run(image: str, tag: str, text: str) -> str:
     ''' run python in docker '''

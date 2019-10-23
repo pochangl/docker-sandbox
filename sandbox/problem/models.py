@@ -1,5 +1,4 @@
 from django.db import models
-from worker import docker
 from worker import executor
 
 
@@ -38,7 +37,7 @@ class Submission(models.Model):
         '''
         try:
             self.stdout = self.problem.run(self.code)
-        except docker.ExecutionError as error:
+        except executor.ExecutionError as error:
             self.stderr = str(error)
         finally:
             self.evaluated = True
