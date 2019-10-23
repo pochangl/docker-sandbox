@@ -17,9 +17,3 @@ class SubmissionSerializer(serializers.ModelSerializer):
         model = models.Submission
         fields = ('id', 'problem', 'code', 'stdout', 'stderr', 'evaluated', 'has_passed')
         read_only_fields = ('id', 'stderr', 'stdout', 'evaluated', 'has_passed')
-
-    def create(self, *args, **kwargs):
-        submission = super().create(*args, **kwargs)
-        submission.evaluate()
-        submission.save()
-        return submission

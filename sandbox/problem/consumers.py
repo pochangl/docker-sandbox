@@ -1,20 +1,20 @@
-from channels.generic.websocket import JsonWebsocketConsumer
+from channels.generic.websocket import AsyncJsonWebsocketConsumer
 from . import models, serializers
 
 
-class SubmissionConsumer(JsonWebsocketConsumer):
-    def connect(self):
-        self.accept()
+class SubmissionConsumer(AsyncJsonWebsocketConsumer):
+    async def connect(self):
+        await self.accept()
 
-    def receive_json(self, content):
+    async def receive_json(self, content):
         serializer = serializers.SubmissionSerializer(data=content['value'])
         if serializer.is_valid():
             submission = serializer.save()
-            submission.evaluate()
+            await submission.evaluate()
 
             # return result
             result_serializer = serializers.SubmissionSerializer(instance=submission)
-            self.send_json(dict(
+            await self.send_json(dict(
                 type='result',
                 value=result_serializer.data,
             ))

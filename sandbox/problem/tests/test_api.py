@@ -1,3 +1,4 @@
+import pytest
 from django.test import TestCase
 from rest_framework import status
 from utils.rest_framework import ViewsetTestMixin
@@ -13,41 +14,50 @@ class ProblemMixin:
         return base_create_submission(*args, **kwargs)
 
 
-class TestModel(ProblemMixin, TestCase):
-    def test_evaluate_pass(self):
-        problem = self.create_problem(run_script='test()')
-        submission = self.create_submission(
-            problem=problem,
-            code='def test(): print("stdout")')
+'''
+    Test Model
+'''
 
-        self.assertFalse(submission.evaluated)
 
-        submission.evaluate()
+@pytest.mark.django_db(transaction=True)
+@pytest.mark.asyncio
+async def test_evaluate_pass():
+    problem = base_create_problem(run_script='test()')
+    submission = base_create_submission(
+        problem=problem,
+        code='def test(): print("stdout")')
 
-        self.assertTrue(submission.evaluated)
-        self.assertTrue(submission.has_passed)
-        self.assertEqual(submission.stdout, 'stdout\n')
-        self.assertEqual(submission.stderr, '')
+    assert not submission.evaluated
 
-    def test_evaluate_fail(self):
-        problem = self.create_problem(run_script='test()')
-        code = (
-            'def test():'
-            '  print(1)'
-            '  raise Exception()'
-        )
-        submission = self.create_submission(
-            problem=problem,
-            code=code)
+    await submission.evaluate()
 
-        self.assertFalse(submission.evaluated)
+    assert submission.evaluated
+    assert submission.has_passed
+    assert submission.stdout == 'stdout\n'
+    assert submission.stderr == ''
 
-        submission.evaluate()
 
-        self.assertFalse(submission.has_passed)
-        self.assertTrue(submission.evaluated)
-        self.assertEqual(submission.stdout, '')
-        self.assertTrue('raise Exception()' in submission.stderr)
+@pytest.mark.django_db(transaction=True)
+@pytest.mark.asyncio
+async def test_evaluate_fail():
+    problem = base_create_problem(run_script='test()')
+    code = (
+        'def test():'
+        '  print(1)'
+        '  raise Exception()'
+    )
+    submission = base_create_submission(
+        problem=problem,
+        code=code)
+
+    assert not submission.evaluated
+
+    await submission.evaluate()
+
+    assert not submission.has_passed
+    assert submission.evaluated
+    assert submission.stdout == ''
+    assert 'raise Exception()' in submission.stderr
 
 
 class TestSubmissionSerializer(ProblemMixin, TestCase):
@@ -59,7 +69,7 @@ class TestSubmissionSerializer(ProblemMixin, TestCase):
         ))
         serializer.is_valid()
         submission = serializer.save()
-        self.assertTrue(submission.evaluated)
+        self.assertTrue(submission)
 
     def test_fields(self):
         problem = self.create_problem(run_script='test()')
@@ -138,21 +148,6 @@ class TestProblemViewset(ViewsetTestMixin, ProblemMixin, TestCase):
 class TestSubmissionViewset(ViewsetTestMixin, ProblemMixin, TestCase):
     view_name = 'problem:submission'
 
-    def test_create(self):
-        problem = self.create_problem('test()')
-        data = dict(
-            problem=problem.pk,
-            code='def test(): pass',
-        )
-        content = self.api_create(data=data).json
-
-        self.assertDictContainsSubset(dict(
-            problem=problem.pk,
-            has_passed=True,
-            stderr='',
-            evaluated=True,
-        ), content)
-
     def test_list(self):
         content = self.api_list().json
         self.assertEqual(content, [])
@@ -172,4 +167,7 @@ class TestSubmissionViewset(ViewsetTestMixin, ProblemMixin, TestCase):
         self.assertEqual(response.status_code, HTTP_405_METHOD_NOT_ALLOWED)
 
         response = self.api_delete(pk=1)
+        self.assertEqual(response.status_code, HTTP_405_METHOD_NOT_ALLOWED)
+
+        response = self.api_create(data={})
         self.assertEqual(response.status_code, HTTP_405_METHOD_NOT_ALLOWED)

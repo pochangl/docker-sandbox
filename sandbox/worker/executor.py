@@ -1,3 +1,4 @@
+import asyncio
 import tempfile
 import contextlib
 from functools import wraps
@@ -37,17 +38,17 @@ def TempFile(text=''):
 def return_str(func):
     'convert binary to utf8 string'
     @wraps(func)
-    def wrapper(*args, **kwargs):
-        result = func(*args, **kwargs)
+    async def wrapper(*args, **kwargs):
+        result = await func(*args, **kwargs)
         return str(result, encoding='utf8')
     return wrapper
 
 
-@TransformError()
 @return_str
-def run(image: str, tag: str, text: str) -> str:
+async def run(image: str, tag: str, text: str) -> str:
     ''' run python in docker '''
-    with TempFile(text) as main:
+    await asyncio.sleep(1)
+    with TempFile(text) as main, TransformError():
         return docker.run(
             image='{}:{}'.format(image, tag),
             command='python /main.py',

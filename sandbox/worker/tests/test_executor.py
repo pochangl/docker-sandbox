@@ -1,15 +1,30 @@
-from unittest import TestCase
+import re
+import contextlib
+import pytest
 from ..executor import run, ExecutionError
 
 
-class TestPythonRun(TestCase):
-    def run_python(self, text: str):
-        return run('python', '3.7', text)
+@contextlib.contextmanager
+def assertRaisesRegex(exception, regex):
+    try:
+        yield
+    except exception as ex:
+        assert re.search(regex, ex.args[0])
+    else:
+        assert False, 'exception {} not found'.format(exception)
 
-    def test_hello_world(self):
-        stdout = self.run_python('print("hello world")')
-        self.assertEqual(stdout, 'hello world\n')
 
-    def test_exception(self):
-        with self.assertRaisesRegex(ExecutionError, r'Exception: err\n$'):
-            self.run_python('raise Exception("err")')
+def run_python(text: str):
+    return run('python', '3.7', text)
+
+
+@pytest.mark.asyncio
+async def test_hello_world():
+    stdout = await run_python('print("hello world")')
+    assert stdout == 'hello world\n'
+
+
+@pytest.mark.asyncio
+async def test_exception():
+    with assertRaisesRegex(ExecutionError, r'Exception: err\n$'):
+        await run_python('raise Exception("err")')

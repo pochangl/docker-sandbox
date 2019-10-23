@@ -9,7 +9,6 @@ class ProblemViewSet(viewsets.ReadOnlyModelViewSet):
 
 class SubmissionViewSet(mixins.ListModelMixin,
                         mixins.RetrieveModelMixin,
-                        mixins.CreateModelMixin,
                         viewsets.GenericViewSet):
     queryset = models.Submission.objects.all()
     serializer_class = serializers.SubmissionSerializer
