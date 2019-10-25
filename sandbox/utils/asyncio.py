@@ -11,3 +11,9 @@ async def run_background(coroutine):
     await asyncio.sleep(0)
     yield
     task.cancel()
+
+
+def to_sync_func(func):
+    def wrapper(*args, **kwargs):
+        asyncio.run(func(*args, **kwargs))
+    return wrapper

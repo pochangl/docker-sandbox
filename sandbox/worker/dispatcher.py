@@ -1,13 +1,30 @@
 import asyncio
-import collections
-from . import executor
+import contextlib
+import json
+from channels import layers
+from django.core.signing import Signer
+from . import executor, models
 
-Result = collections.namedtuple('Result', ('stdout', 'stderr'), defaults=('', ''))
 
-async def run(image: str, tag: str, text: str) -> str:
-    await asyncio.sleep(1)
+signer = Signer(salt='dispatcher')
 
-    try:
-        return Result(stdout=executor.run(image, tag, text))
-    except executor.ExecutionError as error:
-        return Result(stderr=str(error))
+
+async def send_json(channel_name, value):
+    channel_layer = layers.get_channel_layer()
+    value['id'] = signer.sign(value['id'])
+    await channel_layer.send(channel_name, dict(
+        type='websocket.send',
+        value=value,
+    ))
+
+
+async def receive_json(value):
+    pk = signer.unsign(value.pop('id'))
+    queue = models.WorkerQueue.objects.get(pk=pk)
+    await queue.receive(value)
+
+
+async def run(queue, **kwargs) -> str:
+    worker = models.Worker.objects.latest('id')  # bug: only the last work will get called
+
+    await send_json(worker.channel_name, dict(id=queue.pk, **kwargs))

@@ -7,14 +7,6 @@ class Problem(models.Model):
     description = models.TextField()
     run_script = models.TextField()
 
-    async def run(self, code):
-        '''
-            merge code with run_script
-            then execute the merged code
-        '''
-        merged_code = '{}\n{}'.format(code, self.run_script)
-        return await dispatcher.run('python', '3.7', merged_code)
-
     def __str__(self):
         return self.title
 
@@ -31,11 +23,13 @@ class Submission(models.Model):
     def has_passed(self):
         return self.stderr == ''
 
-    async def evaluate(self):
-        '''
-            evaluate result
-        '''
-        result = await self.problem.run(self.code)
-        self.stdout = result.stdout
-        self.stderr = result.stderr
+    def process_evaluation(self, result):
+        self.stdout = result['stdout']
+        self.stderr = result['stderr']
         self.evaluated = True
+        self.save()
+
+    @property
+    def run_params(self):
+        merged_code = '{}\n{}'.format(self.code, self.problem.run_script)
+        return dict(image='python', tag='3.7', text=merged_code)

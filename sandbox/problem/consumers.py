@@ -1,4 +1,6 @@
 from channels.generic.websocket import AsyncJsonWebsocketConsumer
+from worker.models import WorkerQueue
+from worker import dispatcher
 from . import models, serializers
 
 
@@ -10,11 +12,12 @@ class SubmissionConsumer(AsyncJsonWebsocketConsumer):
         serializer = serializers.SubmissionSerializer(data=content['value'])
         if serializer.is_valid():
             submission = serializer.save()
-            await submission.evaluate()
+            queue = WorkerQueue.objects.create(
+                channel_name=self.channel_name,
+                model=submission,
+                serializer_path='problem.serializers.SubmissionSerializer',
+            )
+            await dispatcher.run(queue=queue, **submission.run_params)
 
-            # return result
-            result_serializer = serializers.SubmissionSerializer(instance=submission)
-            await self.send_json(dict(
-                type='result',
-                value=result_serializer.data,
-            ))
+    async def websocket_send(self, content):
+        await self.send_json(content['value'])

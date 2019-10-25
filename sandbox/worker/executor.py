@@ -1,3 +1,6 @@
+import collections
+import json
+import websockets
 import tempfile
 import contextlib
 from functools import wraps
@@ -55,3 +58,22 @@ def run(image: str, tag: str, text: str) -> str:
                 [main.name, '/main.py']
             )
         )
+
+
+async def iterable_websocket(websocket):
+    while True:
+        yield await websocket.recv()
+
+
+async def listen(host='ws://localhost:8000'):
+    uri = '{}/ws/worker/'.format(host)
+    async with websockets.connect(uri) as websocket:
+        async for text in websocket:
+            content = json.loads(text)
+            result = dict(stdout='', stderr='', id=content.pop('id'))
+
+            try:
+                result['stdout'] = run(**content)
+            except ExecutionError as error:
+                result['stderr'] = str(error)
+            await websocket.send(json.dumps(result))
