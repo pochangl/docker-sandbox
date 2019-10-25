@@ -4,7 +4,7 @@
 ## 事前安裝
 
 1. Node.js
-2. python
+2. python 3.7+
 3. docker
 
 安裝上述的套件後
