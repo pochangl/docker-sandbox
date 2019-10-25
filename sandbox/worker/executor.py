@@ -60,11 +60,6 @@ def run(image: str, tag: str, text: str) -> str:
         )
 
 
-async def iterable_websocket(websocket):
-    while True:
-        yield await websocket.recv()
-
-
 async def listen(host='ws://localhost:8000'):
     uri = '{}/ws/worker/'.format(host)
     async with websockets.connect(uri) as websocket:
