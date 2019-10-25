@@ -14,6 +14,7 @@
             v-tab(href="#description") 題目描述
             v-tab(href="#stdout" :disabled="!submission.stdout") 輸出結果
             v-tab(href="#stderr" :disabled="!submission.stderr") 錯誤結果
+            v-tab(href="#video" :disabled="!submission.stdout") 視訊
           v-tabs-items.content(v-model="tab")
             v-tab-item(value="description")
               v-card(flat)
@@ -26,6 +27,10 @@
               v-card(flat)
                 v-card-text
                   pre.red--text {{ submission.stderr }}
+            v-tab-item(value="video")
+              v-card(flat)
+                v-card-text
+                  youtube(vid="BBwEF6WBUQs" v-if="tab=='video'")
       v-flex.pt-4.pr-4
         code-editor(@submit="submit")
 </template>
@@ -34,6 +39,7 @@ import { Component, Vue } from 'vue-property-decorator'
 import CodeEditor from '@/components/CodeEditor.vue'
 import { Submission, Problem } from '@/models/problem'
 import { DataTransformer } from '@/utils/component'
+import Youtube from '@/components/Youtube.vue'
 
 const ProblemTransformer = DataTransformer(async (id: number) => {
   const problem = new Problem()
@@ -44,7 +50,8 @@ const ProblemTransformer = DataTransformer(async (id: number) => {
 
 @Component({
   components: {
-    CodeEditor
+    CodeEditor,
+    Youtube
   }
 })
 export default class ProblemPage extends Vue {
