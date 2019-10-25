@@ -19,3 +19,10 @@
 ```bash
 ./run.sh
 ```
+
+
+## 跑運算單位
+```bash
+cd sandbox
+python manage.py runcomputeunit
+```
