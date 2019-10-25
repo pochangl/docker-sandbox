@@ -2,7 +2,7 @@
 set -e
 
 pip install -r requirements.txt
-docker pull python:latest
+docker pull python:3.7
 cd web
 npm install
 
