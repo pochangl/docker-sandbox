@@ -5,11 +5,10 @@ from . import models
 class ProblemSerializer(serializers.ModelSerializer):
     class Meta:
         model = models.Problem
-        fields = ('id', 'title', 'description')
+        fields = ('id', 'title', 'description', 'output_type')
 
 
 class SubmissionSerializer(serializers.ModelSerializer):
-
     # trimming is unexpected and biased
     code = serializers.CharField(trim_whitespace=False, max_length=10240)
 

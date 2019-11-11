@@ -2,17 +2,17 @@ import pytest
 from django.test import TestCase
 from rest_framework import status
 from utils.rest_framework import ViewsetTestMixin
-from .utils import create_problem as base_create_problem, create_submission as base_create_submission
+from .utils import create_problem, create_submission
 from ..serializers import SubmissionSerializer
 from .. import models
 
 
 class ProblemMixin:
     def create_problem(self, *args, **kwargs):
-        return base_create_problem(*args, **kwargs)
+        return create_problem(*args, **kwargs)
 
     def create_submission(self, *args, **kwargs):
-        return base_create_submission(*args, **kwargs)
+        return create_submission(*args, **kwargs)
 
 
 '''
@@ -63,6 +63,10 @@ class TestProblemViewset(ViewsetTestMixin, ProblemMixin, TestCase):
         problem = self.create_problem()
         content = self.api_retrieve(pk=problem.pk).json
         self.assertEqual(content['id'], problem.pk)
+
+        # test fields
+        for name in ['id', 'title', 'description', 'output_type']:
+            self.assertIn(name, content)
 
     def test_invalid_methods(self):
         HTTP_405_METHOD_NOT_ALLOWED = status.HTTP_405_METHOD_NOT_ALLOWED

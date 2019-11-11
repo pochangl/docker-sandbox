@@ -2,10 +2,17 @@ from django.db import models
 from worker import dispatcher
 
 
+mime_types = (
+    ('text/plain', 'text/plain'),
+    ('text/html', 'text/html'),
+)
+
+
 class Problem(models.Model):
     title = models.CharField(max_length=128)
     description = models.TextField()
     run_script = models.TextField()
+    output_type = models.CharField(max_length=64, default='text/plain', choices=mime_types)
 
     def __str__(self):
         return self.title
