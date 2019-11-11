@@ -20,9 +20,7 @@
               v-card(flat)
                 v-card-text {{ problemModel.description }}
             v-tab-item(value="stdout")
-              v-card(flat)
-                v-card-text
-                  pre.green--text {{ submission.stdout }}
+              submission-output(:problem="problemModel" :submission="submission")
             v-tab-item(value="stderr")
               v-card(flat)
                 v-card-text
@@ -36,10 +34,15 @@
 </template>
 <script lang="ts">
 import { Component, Vue } from 'vue-property-decorator'
+
+// components
 import CodeEditor from '@/components/CodeEditor.vue'
+import Youtube from '@/components/Youtube.vue'
+import SubmissionOutput from '@/components/problem/output/index.vue'
+
+// models
 import { Submission, Problem } from '@/models/problem'
 import { DataTransformer } from '@/utils/component'
-import Youtube from '@/components/Youtube.vue'
 
 const ProblemTransformer = DataTransformer(async (id: number) => {
   const problem = new Problem()
@@ -51,7 +54,8 @@ const ProblemTransformer = DataTransformer(async (id: number) => {
 @Component({
   components: {
     CodeEditor,
-    Youtube
+    Youtube,
+    SubmissionOutput
   }
 })
 export default class ProblemPage extends Vue {
