@@ -13,7 +13,7 @@ class WebsocketListenTest(ChannelsLiveServerTestCase):
     @to_sync_func
     @setup_worker
     async def test_submit(self):
-        problem = create_problem(run_script='test()')
+        problem = create_problem(run_script='{% import_main %}\nmain.test()')
         data = dict(
             value=dict(
                 problem=problem.pk,
@@ -32,7 +32,7 @@ class WebsocketListenTest(ChannelsLiveServerTestCase):
     @to_sync_func
     @setup_worker
     async def test_fail(self):
-        problem = create_problem(run_script='test()')
+        problem = create_problem(run_script='{% import_main %}\nmain.test()')
         data = dict(
             value=dict(
                 problem=problem.pk,
@@ -47,3 +47,27 @@ class WebsocketListenTest(ChannelsLiveServerTestCase):
 
             assert re.search(r'Exception: nope\n$', result['stderr']), result['stderr']
             assert result['stdout'] == ''
+
+
+    @to_sync_func
+    @setup_worker
+    async def test_with_statement(self):
+        problem = create_problem(run_script='''
+            import contextlib
+            {% import_main %}
+            with contextlib.suppress(Exception):
+                main.test()
+            print('pass')
+        '''.replace('\n            ', '\n'))
+        data = dict(
+            value=dict(
+                problem=problem.pk,
+                code='def test(): raise Exception(\'nope\')',
+            )
+        )
+        async with WebsocketCommunicator(SubmissionConsumer, '/submission') as communicator:
+            await communicator.send_json_to(data)
+            response = await communicator.receive_json_from(timeout=5)
+            assert response['type'] == 'result'
+            result = response['value']
+            assert result['stdout'] == 'pass\n'

@@ -48,15 +48,16 @@ def return_str(func):
 
 @TransformError()
 @return_str
-def run(image: str, tag: str, text: str) -> str:
+def run(image: str, tag: str, files: '{ filename: code }') -> str:
     ''' run python in docker '''
-    with TempFile(text) as main:
+    with contextlib.ExitStack() as stack:
+        volumes = [
+            (stack.enter_context(TempFile(code)).name, name)
+            for name, code in files.items()]
         return docker.run(
             image='{}:{}'.format(image, tag),
-            command='python /main.py',
-            volumes=docker.Volumes(
-                [main.name, '/main.py']
-            )
+            command='python /run.py',
+            volumes=docker.Volumes(*volumes)
         )
 
 

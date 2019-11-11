@@ -38,5 +38,8 @@ class Submission(models.Model):
 
     @property
     def run_params(self):
-        merged_code = '{}\n{}'.format(self.code, self.problem.run_script)
-        return dict(image='python', tag='3.7', text=merged_code)
+        run = self.problem.run_script.replace('{% import_main %}', 'import main')
+        return dict(image='python', tag='3.7', files={
+            '/run.py': run,
+            '/main.py': self.code,
+        })
