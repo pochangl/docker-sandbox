@@ -2,5 +2,6 @@
 set -e
 source ../venv/bin/activate
 pip install -r ../requirements.txt
-
-daphne sandbox.asgi:application --port $PORT --bind 0.0.0.0 -v2
+python manage.py migrate
+echo 'import initial_demo' | python manage.py shell
+python manage.py runserver 0.0.0.0:$PORT

@@ -4,16 +4,6 @@ from django.db import migrations, models
 import django.db.models.deletion
 
 
-def initial_problem(apps, schema):
-    # default problem
-    Problem = apps.get_model('problem', 'Problem')
-    Problem.objects.create(
-        title='two sum',
-        description='create a function named \'two_sum\' with two parameters (a, b) that adds up two numbers',
-        run_script="assert two_sum(1, 2) == 3, 'two_sum(1, 2) returns {}'.format(two_sum(1, 2))\nprint('two_sum(1, 2) = {}'.format(two_sum(1, 2)))"
-    )
-
-
 class Migration(migrations.Migration):
 
     initial = True
@@ -43,5 +33,4 @@ class Migration(migrations.Migration):
                 ('problem', models.ForeignKey(on_delete=django.db.models.deletion.PROTECT, to='problem.Problem')),
             ],
         ),
-        migrations.RunPython(initial_problem)
     ]
