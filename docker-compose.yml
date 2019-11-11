@@ -1,0 +1,41 @@
+version: '3.2'
+services:
+  server:
+    build: ./docker/sandbox
+    depends_on:
+      - redis
+    ports:
+      - 8000:8000
+    volumes:
+      - ./sandbox:/home/user/sandbox
+      - ./docker/sandbox/entrypoint.sh:/entrypoint.sh
+      - ./requirements.txt:/home/user/requirements.txt
+    networks:
+      net:
+        ipv4_address: 10.2.0.2
+
+  web:
+    build: ./docker/web
+    ports:
+      - 8080:8080
+    volumes:
+      - ./web:/home/user
+      - ./docker/web/entrypoint.sh:/entrypoint.sh
+    networks:
+      net:
+        ipv4_address: 10.2.0.3
+
+  redis:
+    image: redis
+    ports:
+      - 6379:6379
+    networks:
+      net:
+        ipv4_address: 10.2.0.4
+
+networks:
+  net:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 10.2.0.0/16

@@ -1,0 +1,20 @@
+FROM python:3.7
+EXPOSE 8000
+
+# setup podman
+RUN pip install virtualenv
+
+# setup user
+RUN useradd -ms /bin/bash --uid 1000 user
+USER user
+WORKDIR /home/user
+
+# setup python environment
+RUN virtualenv --clear --python=python3.7 ./venv
+
+# home dir
+WORKDIR /home/user/sandbox
+
+ENV PORT=8000
+
+ENTRYPOINT /entrypoint.sh

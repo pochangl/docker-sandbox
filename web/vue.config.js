@@ -2,19 +2,19 @@ module.exports = {
   devServer: {
     proxy: {
       '^/api': {
-        target: 'http://localhost:8000/',
+        target: 'http://10.2.0.2:8000/',
         changeOrigin: true
       },
       '^/admin': {
-        target: 'http://localhost:8000/',
+        target: 'http://10.2.0.2:8000/',
         changeOrigin: true
       },
       '^/static': {
-        target: 'http://localhost:8000/',
+        target: 'http://10.2.0.2:8000/',
         changeOrigin: true
       },
       '^/ws': {
-        target: 'ws://localhost:8000/',
+        target: 'ws://10.2.0.2:8000/',
         ws: true,
         changeOrigin: true
       }

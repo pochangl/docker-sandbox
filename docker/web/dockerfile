@@ -1,0 +1,10 @@
+FROM node:12
+EXPOSE 8080
+
+# setup user
+USER node
+
+# home dir
+WORKDIR /home/user
+
+ENTRYPOINT /entrypoint.sh
