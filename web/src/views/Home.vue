@@ -4,7 +4,7 @@
       v-subheader 所有題目
       v-list-item(
         router
-        :to="{name: 'problem', params: {problem: 1}}"
+        :to="{name: 'problem', params: { problem: problem.id }}"
         v-for="problem in problems.objects"
         :key="problem.id"
       )
