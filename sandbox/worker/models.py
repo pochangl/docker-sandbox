@@ -34,7 +34,7 @@ class WorkerQueue(models.Model):
 
         layer = get_channel_layer()
         await layer.send(self.channel_name, dict(
-            type='websocket_send',
+            type='on_result',
             value=dict(
                 type='result',
                 value=self.serialized_data,

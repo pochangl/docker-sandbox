@@ -19,5 +19,7 @@ class SubmissionConsumer(AsyncJsonWebsocketConsumer):
             )
             await dispatcher.run(queue=queue, **submission.run_params)
 
-    async def websocket_send(self, content):
-        await self.send_json(content['value'])
+    async def on_result(self, content):
+        value = content['value']
+        await self.send_json(value)
+        await self.send_json(dict(type='notification', value='fail' if value['value']['stderr'] else 'success'))

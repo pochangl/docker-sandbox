@@ -22,7 +22,14 @@ export class Submission extends WebSocketModel {
   stderr: string = ''
   stdout: string = ''
 
-  create () {
-    return this.send()
+  onNotification(): Promise<string> {
+    return this.receive('notification')
+  }
+
+  async onResult(): Promise<Submission> {
+    const data = await this.receive('result')
+    const submission = new Submission()
+    submission.construct(data)
+    return submission
   }
 }

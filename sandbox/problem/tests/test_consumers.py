@@ -31,6 +31,33 @@ class WebsocketListenTest(ChannelsLiveServerTestCase):
 
     @to_sync_func
     @setup_worker
+    async def test_notification(self):
+        problem = create_problem(run_script='{% import_main %}\nmain.test()')
+        pass_data = dict(
+            value=dict(
+                problem=problem.pk,
+                code='def test(): print("stdout")',
+            )
+        )
+        fail_data = dict(
+            value=dict(
+                problem=problem.pk,
+                code='def test(): print("stdout"',
+            )
+        )
+        async with WebsocketCommunicator(SubmissionConsumer, '/submission') as communicator:
+            await communicator.send_json_to(pass_data)
+            await communicator.receive_json_from(timeout=5)  # ignore result
+            response = await communicator.receive_json_from(timeout=5)
+            assert response == dict(type='notification', value='success')
+
+            await communicator.send_json_to(fail_data)
+            await communicator.receive_json_from(timeout=5)  # ignore result
+            response = await communicator.receive_json_from(timeout=5)
+            assert response == dict(type='notification', value='fail')
+
+    @to_sync_func
+    @setup_worker
     async def test_fail(self):
         problem = create_problem(run_script='{% import_main %}\nmain.test()')
         data = dict(
@@ -47,7 +74,6 @@ class WebsocketListenTest(ChannelsLiveServerTestCase):
 
             assert re.search(r'Exception: nope\n$', result['stderr']), result['stderr']
             assert result['stdout'] == ''
-
 
     @to_sync_func
     @setup_worker

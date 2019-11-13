@@ -2,6 +2,7 @@
   Data Model that blends well with django_rest_framework
 */
 import http from '@/http'
+import { WebSocketSubject } from 'rxjs/observable/dom/WebSocketSubject'
 import { webSocket } from 'rxjs/observable/dom/webSocket'
 
 export function getListUrl(name: string): string {
@@ -88,23 +89,62 @@ export abstract class ModelList<T extends Model> {
   }
 }
 
-export abstract class WebSocketModel extends BaseModel {
-  async send() {
-    // post data to server
-    const viewName: string = (this.constructor as any).viewName
-    const url = `ws://${window.location.host}/ws/${viewName}/`
-    const subject = webSocket<string>(url)
-    await new Promise((resolve) => {
-      subject.subscribe((response: any) => {
-        this.construct(response.value)
-        resolve()
-      })
-      subject.next(JSON.stringify({
-        value: this.json()
-      }))
-    })
-    subject.complete()
-  }
+interface IWebsocketPacket<V> {
+  type: string
+  value: V
 }
 
-(window as any).webSocket = webSocket
+const isProduction = window.location.protocol.slice(0, 5) === 'https'
+const wsProtocol = isProduction ? 'wss' : 'ws'
+
+export abstract class WebSocketModel<V = any> extends BaseModel {
+  subject: WebSocketSubject<string>
+
+  connect() {
+    // post data to server
+    const viewName: string = (this.constructor as any).viewName
+    const url = `${wsProtocol}://${window.location.host}/ws/${viewName}/`
+    const subject = this.subject = webSocket<string>(url)
+  }
+
+  disconnect() {
+    this.subject.complete()
+  }
+
+  receive(name: string): Promise<V> {
+    return new Promise((resolve) => {
+      const subscription = this.subject.subscribe((response: any) => {
+        let data: IWebsocketPacket<V>
+        if (typeof response === 'string') {
+          data = JSON.parse(response)
+        } else {
+          data = response
+        }
+        if (data.type === name) {
+          subscription.unsubscribe()
+          resolve(data.value)
+        }
+      })
+    })
+  }
+
+  static async contextmanager<WSM extends WebSocketModel> (func: (wsm: WSM) => Promise<any>, data: any) {
+    const wsm: WSM = new (this as any)()
+    if (data) {
+      wsm.construct(data)
+      wsm.connect()
+    }
+
+    func(wsm).finally(() => {
+      wsm.disconnect()
+    })
+    return wsm
+  }
+
+  send(name: string, value: V) {
+    this.subject.next(JSON.stringify({
+      type: name,
+      value
+    }))
+  }
+}

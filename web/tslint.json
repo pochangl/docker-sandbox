@@ -30,6 +30,7 @@
     "member-access": false,
     "no-shadowed-variable": false,
     "no-empty": false,
-    "await-promise": [true, "PromiseLike"]
+    "await-promise": [true, "PromiseLike"],
+    "no-floating-promises": false
   }
 }

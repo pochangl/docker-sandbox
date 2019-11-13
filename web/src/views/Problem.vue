@@ -32,7 +32,7 @@
       v-flex.pt-4.pr-4
         code-editor(@submit="submit")
     v-snackbar(
-      v-model="snackbar"
+      v-model="notification"
       :timeout="10000"
     ) submission {{ submission.stdout ? 'success' : 'failed'}}
 </template>
@@ -72,16 +72,20 @@ export default class ProblemPage extends Vue {
   problemModel: Problem = new Problem()
 
   tab: string = 'description'
-  snackbar = false
+  notification: string = ''
 
   async submit(code: string) {
-    const submission = new Submission()
-    submission.code = code
-    submission.problem = this.problemModel.id
-    await submission.create()
-    this.snackbar = true
-    this.submission = submission
-    this.focusTab()
+    Submission.contextmanager<Submission>(async socket => {
+      socket.send('run', socket.json())
+      const [submission, notification] = await Promise.all([socket.onResult(), socket.onNotification()])
+      this.submission = submission
+      this.notification = notification
+
+      this.focusTab()
+    }, {
+      code,
+      problem: this.problemModel.id
+    })
   }
 
   focusTab () {
