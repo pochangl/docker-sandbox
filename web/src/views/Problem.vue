@@ -31,6 +31,10 @@
                   youtube(vid="BBwEF6WBUQs" v-if="tab=='video'")
       v-flex.pt-4.pr-4
         code-editor(@submit="submit")
+    v-snackbar(
+      v-model="snackbar"
+      :timeout="10000"
+    ) submission {{ submission.stdout ? 'success' : 'failed'}}
 </template>
 <script lang="ts">
 import { Component, Vue } from 'vue-property-decorator'
@@ -68,12 +72,14 @@ export default class ProblemPage extends Vue {
   problemModel: Problem = new Problem()
 
   tab: string = 'description'
+  snackbar = false
 
   async submit(code: string) {
     const submission = new Submission()
     submission.code = code
     submission.problem = this.problemModel.id
     await submission.create()
+    this.snackbar = true
     this.submission = submission
     this.focusTab()
   }
