@@ -1,9 +1,6 @@
-import asyncio
-import contextlib
-import json
 from channels import layers
 from django.core.signing import Signer
-from . import executor, models
+from . import models
 
 
 signer = Signer(salt='dispatcher')

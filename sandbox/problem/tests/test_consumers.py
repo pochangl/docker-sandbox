@@ -6,7 +6,6 @@ from utils.asyncio import to_sync_func
 from worker.tests.utils import setup_worker
 from .utils import create_problem
 from ..consumers import SubmissionConsumer
-from .. import models
 
 
 class WebsocketListenTest(ChannelsLiveServerTestCase):

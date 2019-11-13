@@ -1,5 +1,4 @@
 from django.db import models
-from worker import dispatcher
 
 
 mime_types = (

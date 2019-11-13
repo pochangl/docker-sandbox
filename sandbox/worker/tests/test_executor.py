@@ -1,9 +1,5 @@
-import asyncio
 import re
 import contextlib
-import pytest
-from channels.testing import ChannelsLiveServerTestCase
-from ..models import Worker
 from ..executor import run, ExecutionError
 
 

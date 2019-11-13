@@ -1,8 +1,7 @@
 import inspect
 import asyncio
-from unittest.mock import patch
 from utils.asyncio import run_background
-from ..executor import run, ExecutionError, listen
+from ..executor import listen
 
 
 def setup_worker(func):

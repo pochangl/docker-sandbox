@@ -1,4 +1,3 @@
-import collections
 import json
 import websockets
 import tempfile
