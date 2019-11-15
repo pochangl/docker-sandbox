@@ -65,7 +65,7 @@ class TestProblemViewset(ViewsetTestMixin, ProblemMixin, TestCase):
         self.assertEqual(content['id'], problem.pk)
 
         # test fields
-        for name in ['id', 'title', 'description', 'output_type']:
+        for name in ['id', 'title', 'description', 'output_type', 'initial_code', 'image']:
             self.assertIn(name, content)
 
     def test_invalid_methods(self):

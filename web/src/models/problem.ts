@@ -2,10 +2,12 @@ import { Model, ModelList, WebSocketModel } from '@/models'
 
 export class Problem extends Model {
   static viewName = 'problem/problem'
-  static fields = ['title', 'description', 'output_type']
+  static fields = ['title', 'description', 'image', 'initial_code', 'output_type']
 
   title: string
   description: string
+  image: string
+  initial_code: string // tslint:disable-line variable-name
   output_type: string // tslint:disable-line variable-name
 }
 

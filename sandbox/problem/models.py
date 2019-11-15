@@ -12,6 +12,7 @@ class Problem(models.Model):
     description = models.TextField()
     image = models.CharField(max_length=128)
     run_script = models.TextField()
+    initial_code = models.TextField(blank=True, default='')
     output_type = models.CharField(max_length=64, default='text/plain', choices=mime_types)
 
     def __str__(self):

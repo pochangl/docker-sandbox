@@ -16,4 +16,9 @@ class Migration(migrations.Migration):
             field=models.CharField(default='python:3.7', max_length=128),
             preserve_default=False,
         ),
+        migrations.AddField(
+            model_name='problem',
+            name='initial_code',
+            field=models.TextField(blank=True, default=''),
+        ),
     ]

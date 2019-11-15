@@ -7,13 +7,16 @@
 </template>
 <script lang="ts">
 import ace from 'ace-builds'
-import { Component, Vue } from 'vue-property-decorator'
+import { Component, Vue, Prop } from 'vue-property-decorator'
 
 import 'ace-builds/src-noconflict/mode-python'
 import 'ace-builds/src-noconflict/theme-vibrant_ink'
 
 @Component
 export default class CodeEditor extends Vue {
+  @Prop({ type: String, default: '' })
+  initial: string
+
   container: any
   editor: any
 
@@ -26,6 +29,7 @@ export default class CodeEditor extends Vue {
       useSoftTabs: true,
       tabSize: 4,
     })
+    editor.setValue(this.initial, 1)
   }
   beforeDestroy() {
     this.editor.destroy()

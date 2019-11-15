@@ -5,7 +5,7 @@ from . import models
 class ProblemSerializer(serializers.ModelSerializer):
     class Meta:
         model = models.Problem
-        fields = ('id', 'title', 'description', 'output_type')
+        fields = ('id', 'title', 'description', 'image', 'initial_code', 'output_type')
 
 
 class SubmissionSerializer(serializers.ModelSerializer):

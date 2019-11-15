@@ -30,7 +30,7 @@
                 v-card-text
                   youtube(vid="BBwEF6WBUQs" v-if="tab=='video'")
       v-flex.pt-4.pr-4
-        code-editor(@submit="submit")
+        code-editor(@submit="submit" :initial="problemModel.initial_code" :key="problemModel.id")
     v-snackbar(
       v-model="notification"
       :timeout="10000"
