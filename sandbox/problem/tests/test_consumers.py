@@ -96,3 +96,37 @@ class WebsocketListenTest(ChannelsLiveServerTestCase):
             assert response['type'] == 'result'
             result = response['value']
             assert result['stdout'] == 'pass\n'
+
+    @to_sync_func
+    @setup_worker
+    async def test_problem_image(self):
+        'test if problem is run with specified image'
+
+        async def run_problem(problem):
+            'run problem and return result'
+            async with WebsocketCommunicator(SubmissionConsumer, '/submission') as communicator:
+                data = dict(
+                    value=dict(
+                        problem=problem.pk,
+                        code='def test(): raise Exception(\'nope\')',
+                    )
+                )
+                await communicator.send_json_to(data)
+                response = await communicator.receive_json_from(timeout=5)
+                return response['value']
+
+        problem3_7 = create_problem(
+            run_script='import sys\nprint(sys.version)',
+            image='python:3.7',
+        )
+
+        problem3_8 = create_problem(
+            run_script='import sys\nprint(sys.version)',
+            image='python:3.8',
+        )
+
+        result = await run_problem(problem3_7)
+        assert '3.7.' == result['stdout'][:4]
+
+        result = await run_problem(problem3_8)
+        assert '3.8.' == result['stdout'][:4]

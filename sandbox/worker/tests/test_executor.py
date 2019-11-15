@@ -14,7 +14,7 @@ def assertRaisesRegex(exception, regex):
 
 
 def run_python(text: str):
-    return run('python', '3.7', files={
+    return run('python:3.7', files={
         '/run.py': text
     })
 

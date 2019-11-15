@@ -22,6 +22,5 @@ async def receive_json(value):
 
 
 async def run(queue, **kwargs) -> str:
-    worker = models.Worker.objects.latest('id')  # bug: only the last work will get called
-
+    worker = models.Worker.objects.latest('id')  # bug: only the last worker will get called
     await send_json(worker.channel_name, dict(id=queue.pk, **kwargs))

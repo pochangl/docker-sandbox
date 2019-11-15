@@ -10,6 +10,7 @@ mime_types = (
 class Problem(models.Model):
     title = models.CharField(max_length=128)
     description = models.TextField()
+    image = models.CharField(max_length=128)
     run_script = models.TextField()
     output_type = models.CharField(max_length=64, default='text/plain', choices=mime_types)
 
@@ -38,7 +39,7 @@ class Submission(models.Model):
     @property
     def run_params(self):
         run = self.problem.run_script.replace('{% import_main %}', 'import main')
-        return dict(image='python', tag='3.7', files={
+        return dict(image=self.problem.image, files={
             '/run.py': run,
             '/main.py': self.code,
         })
