@@ -1,9 +1,13 @@
-import json
-import websockets
-import tempfile
 import contextlib
+import json
+import logging
+import tempfile
+import websockets
 from functools import wraps
 from . import docker
+
+
+logger = logging.getLogger('django.sandbox.executor')
 
 
 class ExecutionError(ValueError):
@@ -63,12 +67,16 @@ def run(image: str, files: '{ filename: code }') -> str:
 async def listen(host='ws://localhost:8000'):
     uri = '{}/ws/worker/'.format(host)
     async with websockets.connect(uri) as websocket:
+        logger.info('connection established')
         async for text in websocket:
             content = json.loads(text)
-            result = dict(stdout='', stderr='', id=content.pop('id'))
+            qid = content.pop('id')
+            logger.info('running task: {}'.format(qid))
+            result = dict(stdout='', stderr='', id=qid)
 
             try:
                 result['stdout'] = run(**content)
             except ExecutionError as error:
                 result['stderr'] = str(error)
+            logger.info('closing task: {}'.format(qid))
             await websocket.send(json.dumps(result))
