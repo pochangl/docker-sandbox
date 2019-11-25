@@ -1,6 +1,6 @@
 <template lang="pug">
   v-container(style="height: 90vh" fluid)
-    v-layout(row wrap fill-height)
+    v-layout(row wrap)
       v-flex.description.flex-grow-0.pa-4
         v-card(flat color="transparent")
           v-card-title.white
@@ -18,7 +18,8 @@
           v-tabs-items.content(v-model="tab")
             v-tab-item(value="description")
               v-card(flat)
-                v-card-text {{ problemModel.description }}
+                v-card-text
+                  pre {{ problemModel.description }}
             v-tab-item(value="stdout")
               submission-output(:problem="problemModel" :submission="submission")
             v-tab-item(value="stderr")
@@ -31,7 +32,7 @@
                   v-btn(:href="'/admin/problem/problem/' + problemModel.id + '/change/'" target="_blank")
                     v-icon fa-edit
                     | 編輯
-      v-flex.pt-4.pr-4
+      v-flex.pt-4.pr-4.editor
         code-editor(@submit="submit" :initial="problemModel.initial_code" :key="problemModel.id")
     v-snackbar(
       v-model="notification"
@@ -103,9 +104,14 @@ export default class ProblemPage extends Vue {
 </script>
 <style lang="sass" scoped>
   .description
-    min-width: 500px
+    max-width: 500px
   .content
     background-color: transparent
+    pre
+      word-wrap: break-word
+      white-space: pre-wrap
     .v-card
       background-color: transparent
+  .editor
+    height: 80vh
 </style>
