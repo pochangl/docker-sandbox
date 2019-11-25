@@ -4,7 +4,7 @@ from . import models
 
 @admin.register(models.Problem)
 class ProblemAdmin(admin.ModelAdmin):
-    list_display = ('pk', 'title')
+    list_display = ('pk', 'title', 'image', 'output_type')
 
 
 @admin.register(models.Submission)
