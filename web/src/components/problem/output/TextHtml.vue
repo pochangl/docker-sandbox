@@ -2,8 +2,10 @@
   v-container.pa-0.ma-0
     full-screen(v-model="full")
       iframe(v-if="isFullHTML" ref="iframe" width="100%" height="100%")
-      div(v-else v-html="html")
-    v-btn(@click="full=true" v-if="!isFullHTML") expand
+      v-layout(v-else column)
+        v-layout(justify-end v-if="!full")
+          v-icon.clickable.mr-2(@click="full=true") fa-expand
+        div.html-tag(v-html="html")
 </template>
 <script lang="ts">
 import { Vue, Component, Prop, Watch } from 'vue-property-decorator'
@@ -48,6 +50,14 @@ export default class TextHtml extends Vue {
 }
 </script>
 <style lang="sass" scoped>
+.clickable
+  cursor: grab
 iframe
   border: none
+</style>
+<style lang="sass">
+// django form configuration
+
+.errorlist
+  color: red
 </style>
