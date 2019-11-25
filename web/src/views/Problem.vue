@@ -14,7 +14,7 @@
             v-tab(href="#description") 題目描述
             v-tab(href="#stdout" :disabled="!submission.stdout") 輸出結果
             v-tab(href="#stderr" :disabled="!submission.stderr") 錯誤結果
-            v-tab(href="#video" :disabled="!submission.stdout") 視訊
+            v-tab(href="#settings") 設定
           v-tabs-items.content(v-model="tab")
             v-tab-item(value="description")
               v-card(flat)
@@ -25,10 +25,12 @@
               v-card(flat)
                 v-card-text
                   pre.red--text {{ submission.stderr }}
-            v-tab-item(value="video")
+            v-tab-item(value="settings")
               v-card(flat)
                 v-card-text
-                  youtube(vid="BBwEF6WBUQs" v-if="tab=='video'")
+                  v-btn(:href="'/admin/problem/problem/' + problemModel.id + '/change/'" target="_blank")
+                    v-icon fa-edit
+                    | 編輯
       v-flex.pt-4.pr-4
         code-editor(@submit="submit" :initial="problemModel.initial_code" :key="problemModel.id")
     v-snackbar(
