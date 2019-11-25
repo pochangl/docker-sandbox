@@ -1,15 +1,24 @@
 <template lang="pug">
   v-container.pa-0.ma-0
-    iframe(v-if="isFullHTML" ref="iframe") {{ html }}
-    div(v-else v-html="html")
+    full-screen(v-model="full")
+      iframe(v-if="isFullHTML" ref="iframe" width="100%" height="100%")
+      div(v-else v-html="html")
+    v-btn(@click="full=true" v-if="!isFullHTML") expand
 </template>
 <script lang="ts">
 import { Vue, Component, Prop, Watch } from 'vue-property-decorator'
+import FullScreen from '@/components/Scrollable/FullScreen.vue'
 
-@Component
+@Component({
+  components: {
+    FullScreen
+  }
+})
 export default class TextHtml extends Vue {
   @Prop({ type: String, required: true })
   value: string
+
+  full: boolean = false
 
   get isFullHTML() {
     return this.html.search('<html') >= 0
@@ -25,7 +34,10 @@ export default class TextHtml extends Vue {
     this.updateResult()
   }
 
-  updateResult () {
+  async updateResult () {
+    this.full = this.isFullHTML
+    await this.$nextTick()
+
     if (this.isFullHTML) {
       const iframe: { contentWindow: Window } = this.$refs.iframe as any
       iframe.contentWindow.document.open()
@@ -38,6 +50,4 @@ export default class TextHtml extends Vue {
 <style lang="sass" scoped>
 iframe
   border: none
-  width: 100%
-  height 100%
 </style>
