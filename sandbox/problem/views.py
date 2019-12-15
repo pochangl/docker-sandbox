@@ -3,7 +3,7 @@ from . import models, serializers
 
 
 class ProblemViewSet(viewsets.ReadOnlyModelViewSet):
-    queryset = models.Problem.objects.all()
+    queryset = models.Problem.objects.order_by('title')
     serializer_class = serializers.ProblemSerializer
 
 
