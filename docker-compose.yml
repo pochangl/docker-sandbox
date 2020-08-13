@@ -1,18 +1,14 @@
 version: '3.2'
 services:
   server:
-    build: ./docker/sandbox
+    build: ./sandbox
     depends_on:
       - redis
     ports:
       - 8000:8000
     volumes:
       - ./sandbox:/home/user/sandbox
-      - ./docker/sandbox/entrypoint.sh:/entrypoint.sh
-      - ./requirements.txt:/home/user/requirements.txt
-    networks:
-      net:
-        ipv4_address: 10.2.0.2
+    network_mode: host
 
   web:
     build: ./docker/web

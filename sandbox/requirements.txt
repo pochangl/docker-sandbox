@@ -1,0 +1,10 @@
+docker==4.3.0
+Django==3.1
+djangorestframework==3.11.0
+channels==2.4.0
+pytest==6.0.1
+pytest-asyncio==0.14.0
+pytest-django==3.9.0
+websockets==8.1
+channels-redis==3.0.1
+daphne==2.5.0
