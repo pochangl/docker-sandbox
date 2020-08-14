@@ -11,27 +11,17 @@ services:
     network_mode: host
 
   web:
-    build: ./docker/web
+    build: ./nuxt
     depends_on:
       - server
     ports:
-      - 8080:8080
+      - 3000:3000
     volumes:
-      - ./web:/home/user
-      - ./docker/web/entrypoint.sh:/entrypoint.sh
-    networks:
-      net:
-        ipv4_address: 10.2.0.3
+      - ./nuxt:/home/user
+    network_mode: host
 
   redis:
     image: redis
     ports:
       - 6379:6379
     network_mode: host
-
-networks:
-  net:
-    driver: bridge
-    ipam:
-      config:
-        - subnet: 10.2.0.0/16
